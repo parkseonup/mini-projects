@@ -29,7 +29,7 @@ export default function SimpleCounter() {
       </div>
 
       <div>
-        <ErrorBoundary fallbackRender={FallbackCountError}>
+        <ErrorBoundary FallbackComponent={FallbackCountError}>
           <ButtonsToChangeCount
             amountToChange={amountToChange}
             setCount={setCount}
