@@ -11,14 +11,6 @@ export default function ButtonsToChangeCount({
     setCount((count: number) => (count + +amount < 0 ? 0 : count + +amount));
   };
 
-  // useEffect(() => {
-  //   if (isNaN(+amountToChange[2])) {
-  //     throw new Error(
-  //       `숫자로 형 변환이 될 수 있는 문자열이나 숫자 값이어야 합니다.`
-  //     );
-  //   }
-  // }, []);
-
   return amountToChange.map((amount) => {
     if (isNaN(+amount)) {
       throw new Error(
