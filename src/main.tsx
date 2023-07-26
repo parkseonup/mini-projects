@@ -1,26 +1,8 @@
-import { createRoot } from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import App from './App';
 import { StrictMode } from 'react';
-import Index from './pages';
-import Counter from './pages/counter';
+import { createRoot } from 'react-dom/client';
+import { RouterProvider } from 'react-router-dom';
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <App />,
-    children: [
-      {
-        index: true,
-        element: <Index />,
-      },
-      {
-        path: '/counter',
-        element: <Counter />,
-      },
-    ],
-  },
-]);
+import { router } from './routes';
 
 const root = createRoot(document.getElementById('app') as HTMLElement);
 root.render(
