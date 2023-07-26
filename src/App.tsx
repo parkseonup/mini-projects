@@ -1,4 +1,5 @@
 import { Link, Outlet } from 'react-router-dom';
+import Nav from './components/common/nav';
 
 export default function App() {
   return (
@@ -7,15 +8,11 @@ export default function App() {
         <Link to='/'>뭐라도 만들어봤다.</Link>
       </h1>
 
-      <nav>
-        <ul>
-          <li>
-            <Link to='/counter'>Simple Counter</Link>
-          </li>
-        </ul>
-      </nav>
+      <Nav />
 
-      <Outlet />
+      <section>
+        <Outlet />
+      </section>
     </header>
   );
 }

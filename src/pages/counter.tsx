@@ -9,7 +9,7 @@ export default function SimpleCounter() {
   const amountToChange = [-1, -10, '-100', '+100', '+10', '+1'];
 
   return (
-    <section>
+    <>
       <h2>Simple Counter</h2>
 
       <dl>
@@ -36,6 +36,6 @@ export default function SimpleCounter() {
           />
         </ErrorBoundary>
       </div>
-    </section>
+    </>
   );
 }
