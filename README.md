@@ -20,7 +20,7 @@ React로 하는 미니 프로젝트
 
 ### Calendar
 
-[토스ㅣSLASH 22 - Effective Component 지속 가능한 성장과 컴포넌트](https://www.youtube.com/watch?v=fR8tsJ2r7Eg) 영상에서 아래 사진을 보고 내부 소스를 유추 및 응요하여 만들어본 calendar
+[토스ㅣSLASH 22 - Effective Component 지속 가능한 성장과 컴포넌트](https://www.youtube.com/watch?v=fR8tsJ2r7Eg) 영상에서 아래 사진을 보고 내부 소스를 유추 및 응용하여 만들어본 calendar
 
 ![image](https://github.com/all-practice/mini-projects/assets/76897813/362d4473-71d3-47ca-92ed-14cea197063f)
 
