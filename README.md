@@ -4,9 +4,9 @@ React로 하는 미니 프로젝트
 
 ## 프로젝트 구성
 
-- [Simple Counter](###simple-counter)
-- [Valid Palindrome](###valid-palindrome)
-- [Calendar](###calendar)
+- [Simple Counter](#simple-counter)
+- [Valid Palindrome](#valid-palindrome)
+- [Calendar](#calendar)
 - Date Picker (예정)
 - Login/Join (예정)
 
