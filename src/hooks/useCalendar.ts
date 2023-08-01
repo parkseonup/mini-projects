@@ -1,33 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { MonthlyDays, getMonthlyDays } from '../utils/getMonthlyDays';
-
-/**
- * 자료에서 내부 소스 추측하기
- * @returns headers, body
- *
- * headers: {
- *  weekDays: [{ key, value }] // NOTE: 삭제. 사용자가 직접 작성하도록 만듦
- *  current: {
- *    year,
- *    month: 0 ~ 11
- *  }
- * }
- * body: {
- *  value: [ // 월별 주 구성
- *    {
- *      key: Index,
- *      value: [ // 주별 날짜 구성 (일 ~ 토)
- *        {
- *          key: string, // NOTE: 삭제. 필요성을 못 느낌.
- *          value: Date,
- *          status: 'thisMonth' | 'otherMonth'
- *        },
- *      ]
- *    },
- *  ],
- *  today: Date
- * }
- */
+import { getAllWeekDays } from '../utils/getAllWeekDays';
 
 export type CalendarData = {
   headers: {
@@ -35,6 +8,8 @@ export type CalendarData = {
       year: number;
       month: number;
     };
+    weekStart: number;
+    weekDays: { key: number; value: string }[];
   };
   body: {
     value: MonthlyDays;
@@ -42,13 +17,17 @@ export type CalendarData = {
   };
 };
 
-export default function uesCalendar(): CalendarData & {
+export default function uesCalendar(
+  locale = navigator.language
+): CalendarData & {
   movePrevMonth: () => void;
   moveNextMonth: () => void;
+  changeWeekStart: (day: number) => void;
 } {
-  const today = useMemo(() => new Date(), []);
+  const today = useRef(new Date());
+  const [weekStart, setWeekStart] = useState(weekStartByCountry[locale]);
   const [currentFullDate, setCurrentFullDate] = useState(
-    new Date(today.setDate(1))
+    new Date(today.current.setDate(1))
   );
   const currentYear = currentFullDate.getFullYear();
   const currentMonth = currentFullDate.getMonth();
@@ -61,13 +40,15 @@ export default function uesCalendar(): CalendarData & {
           year: currentYear,
           month: currentMonth,
         },
+        weekStart,
+        weekDays: getAllWeekDays(weekStart),
       },
       body: {
-        value: getMonthlyDays(currentFullDate),
-        today,
+        value: getMonthlyDays(currentFullDate, weekStart),
+        today: today.current,
       },
     }),
-    [currentFullDate]
+    [currentFullDate, weekStart]
   );
 
   const movePrevMonth = () => {
@@ -78,5 +59,31 @@ export default function uesCalendar(): CalendarData & {
     setCurrentFullDate(new Date(currentYear, currentMonth + 1, currentDate));
   };
 
-  return { ...monthlydata, movePrevMonth, moveNextMonth };
+  const changeWeekStart = (day: number) => {
+    setWeekStart(day);
+  };
+
+  return { ...monthlydata, movePrevMonth, moveNextMonth, changeWeekStart };
 }
+
+const weekStartByCountry: { [key: string]: number } = {
+  // 달력 표기를 일요일(0)부터 시작하는 국가
+  'en-US': 0, // 미국 (US)
+  'en-CA': 0, // 캐나다 (CA)
+  'es-MX': 0, // 멕시코 (MX)
+  'ja-JP': 0, // 일본 (JP)
+  'ko-KR': 0, // 대한민국 (KR)
+  'pt-BR': 0, // 브라질 (BR)
+  'en-AU': 0, // 호주 (AU)
+  // 달력 표기를 월요일(1)부터 시작하는 국가
+  'en-GB': 1, // 영국 (GB)
+  'fr-FR': 1, // 프랑스 (FR)
+  'de-DE': 1, // 독일 (DE)
+  'it-IT': 1, // 이탈리아 (IT)
+  'es-ES': 1, // 스페인 (ES)
+  'zh-CN': 1, // 중국 (CN)
+  'ru-RU': 1, // 러시아 (RU)
+  // 달력 표기를 토요일(6)부터 시작하는 국가
+  'fa-IR': 6, // 이란 (IR)
+  'ps-AF': 6, // 아프가니스탄 (AF)
+};
