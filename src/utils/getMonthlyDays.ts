@@ -27,27 +27,34 @@ export const getMonthlyDays = (
   const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate(); // 현재 달의 마지막 날짜
   const numberOfWeeks = Math.ceil((weekStartIndex + lastDate) / ONE_WEEK); // 현재 달의 주 수
 
-  // 이전/현재/다음 달 날짜 배열
+  // 이전 달 날짜 배열
   const daysOfPrevMonth = Array.from({ length: weekStartIndex }, (_, i) => {
     const date = new Date(currentYear, currentMonth, i - weekStartIndex + 1);
+
     return {
       key: `${date}`,
       value: date,
       status: OTHER_MONTH,
     };
   });
+
+  // 현재 달 날짜 배열
   const daysOfCurrentMonth = Array.from({ length: lastDate }, (_, i) => {
     const date = new Date(currentYear, currentMonth, i + 1);
+
     return {
       key: `${date}`,
       value: date,
       status: THIS_MONTH,
     };
   });
+
+  // 다음 달 날짜 배열
   const daysOfNextMonth = Array.from(
     { length: numberOfWeeks * ONE_WEEK - weekStartIndex - weekStartIndex - 1 },
     (_, i) => {
       const date = new Date(currentYear, currentMonth + 1, i + 1);
+
       return {
         key: `${date}`,
         value: date,
@@ -56,6 +63,7 @@ export const getMonthlyDays = (
     }
   );
 
+  // 이전/현재/다음 달 날짜 배열의 합
   const daysOfTotal = [
     ...daysOfPrevMonth,
     ...daysOfCurrentMonth,
