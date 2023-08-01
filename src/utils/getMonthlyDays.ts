@@ -1,11 +1,16 @@
+type MonthSatus = 'thisMonth' | 'otherMonth';
+
 export type MonthlyDays = {
   value: {
     key: string;
     value: Date;
-    status: 'thisMonth' | 'otherMonth';
+    status: MonthSatus;
   }[];
   key: number;
 }[];
+
+const THIS_MONTH: MonthSatus = 'thisMonth';
+const OTHER_MONTH: MonthSatus = 'otherMonth';
 
 export const getMonthlyDays = (
   currentFullDate: Date,
@@ -28,7 +33,7 @@ export const getMonthlyDays = (
     return {
       key: `${date}`,
       value: date,
-      status: 'otherMonth' as const,
+      status: OTHER_MONTH,
     };
   });
   const daysOfCurrentMonth = Array.from({ length: lastDate }, (_, i) => {
@@ -36,7 +41,7 @@ export const getMonthlyDays = (
     return {
       key: `${date}`,
       value: date,
-      status: 'thisMonth' as const,
+      status: THIS_MONTH,
     };
   });
   const daysOfNextMonth = Array.from(
@@ -46,7 +51,7 @@ export const getMonthlyDays = (
       return {
         key: `${date}`,
         value: date,
-        status: 'otherMonth' as const,
+        status: OTHER_MONTH,
       };
     }
   );
