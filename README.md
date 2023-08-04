@@ -7,8 +7,8 @@ React로 하는 미니 프로젝트
 - [Simple Counter](#simple-counter)
 - [Valid Palindrome](#valid-palindrome)
 - [Calendar](#calendar)
-- Date Picker (예정)
-- Login/Join (예정)
+- [Date Picker (예정)](#date-picker-예정)
+- [Sign Up (예정)](#sign-up-예정)
 
 ### Simple Counter
 
@@ -28,3 +28,14 @@ React로 하는 미니 프로젝트
 
 - 2\*2 배열로 데이터를 반환할 것 (date 객체)
 - 특정 달의 데이터를 보여줘야 하기 때문에 오늘 날짜를 함께 추상화할 것
+
+- [ ] `showFixedNumberOfWeeks`: 몇 줄 보여줄건지 받아서 출력할 수 있도록 수정
+- [ ] 한 주 시작하는 날짜 받아서 주별로 데이터 보내주도록 하기 (지금은 이전/현재/다음 으로 나눠서 뿌리는 중)
+
+### Date Picker (예정)
+
+만들어둔 Calendar 컴포넌트를 사용하여 Date Picker 구현
+
+### Sign Up (예정)
+
+useForm 커스텀 훅을 만들어서 Sign Up 구현
