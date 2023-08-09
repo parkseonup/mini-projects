@@ -5,7 +5,7 @@ import Index from './pages';
 import Counter from './pages/counter';
 import Palindrome from './pages/palindrome';
 import Calendar from './pages/calendar';
-import DatePicker from './pages/datePicker';
+import SelectDate from './pages/selectDate';
 
 export const router = createBrowserRouter([
   {
@@ -29,8 +29,8 @@ export const router = createBrowserRouter([
         element: <Calendar />,
       },
       {
-        path: '/datePicker',
-        element: <DatePicker />,
+        path: '/selectDate',
+        element: <SelectDate />,
       },
     ],
   },

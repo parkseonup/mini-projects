@@ -14,7 +14,7 @@ export default function Nav() {
           <Link to='/calendar'>Calendar</Link>
         </li>
         <li>
-          <Link to='/datePicker'>Date Picker</Link>
+          <Link to='/selectDate'>Select Date</Link>
         </li>
       </ul>
     </nav>
