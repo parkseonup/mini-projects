@@ -1,5 +1,9 @@
 import { useMemo, useRef, useState } from 'react';
-import { MonthlyDays, getAllWeekDays, getMonthlyDays } from '../utils/calendar';
+import {
+  MonthlyDays,
+  getAllWeekDays,
+  getMonthlyDays,
+} from '../utils/date-utils';
 
 export type CalendarData = {
   headers: {

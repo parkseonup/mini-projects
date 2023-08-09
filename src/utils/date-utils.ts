@@ -1,7 +1,4 @@
-const ONE_WEEK = 7;
-const weekDays = ['SUN', 'MON', 'TUE', 'WEN', 'THU', 'FRI', 'SAT'];
-
-type MonthSatus = 'thisMonth' | 'otherMonth';
+export type MonthSatus = 'thisMonth' | 'otherMonth';
 
 export type MonthlyDays = {
   value: {
@@ -11,6 +8,9 @@ export type MonthlyDays = {
   }[];
   key: number;
 }[];
+
+export const ONE_WEEK = 7;
+export const weekDays = ['SUN', 'MON', 'TUE', 'WEN', 'THU', 'FRI', 'SAT'];
 
 export const getYear = (date: Date) => {
   if (date instanceof Date) {
@@ -44,6 +44,16 @@ export const getDay = (date: Date) => {
   throw new Error(`Failed to get day from date: ${date}`);
 };
 
+export const getDateToString = (date: Date) => {
+  if (date instanceof Date) {
+    return `${getYear(date)}-${(getMonth(date) + '').padStart(2, '0')}-${(
+      getDate(date) + ''
+    ).padStart(2, '0')}`;
+  }
+
+  throw new Error(`Failed to get date string from date: ${date}`);
+};
+
 export const getMonthStartDay = (date: Date) => {
   if (date instanceof Date) {
     return getDay(new Date(getYear(date), getMonth(date), 1));
@@ -74,11 +84,11 @@ export const getNumberOfWeeks = (date: Date, weekStart: number = 0) => {
   );
 };
 
-export const getWeekDays = (date: Date) => {}
+export const getWeekDays = (date: Date) => {};
 
 export const getAllDays = (date: Date, weekStart: number) => {
-  // return 
-}
+  // return
+};
 
 // (i - ) % 7
 
