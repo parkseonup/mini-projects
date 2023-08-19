@@ -10,7 +10,30 @@ export type MonthlyDays = {
 }[];
 
 export const ONE_WEEK = 7;
+
 export const weekDays = ['SUN', 'MON', 'TUE', 'WEN', 'THU', 'FRI', 'SAT'];
+
+export const weekStartByCountry: { [key: string]: number } = {
+  // 달력 표기를 일요일(0)부터 시작하는 국가
+  'en-US': 0, // 미국 (US)
+  'en-CA': 0, // 캐나다 (CA)
+  'es-MX': 0, // 멕시코 (MX)
+  'ja-JP': 0, // 일본 (JP)
+  'ko-KR': 0, // 대한민국 (KR)
+  'pt-BR': 0, // 브라질 (BR)
+  'en-AU': 0, // 호주 (AU)
+  // 달력 표기를 월요일(1)부터 시작하는 국가
+  'en-GB': 1, // 영국 (GB)
+  'fr-FR': 1, // 프랑스 (FR)
+  'de-DE': 1, // 독일 (DE)
+  'it-IT': 1, // 이탈리아 (IT)
+  'es-ES': 1, // 스페인 (ES)
+  'zh-CN': 1, // 중국 (CN)
+  'ru-RU': 1, // 러시아 (RU)
+  // 달력 표기를 토요일(6)부터 시작하는 국가
+  'fa-IR': 6, // 이란 (IR)
+  'ps-AF': 6, // 아프가니스탄 (AF)
+};
 
 export const getYear = (date: Date) => {
   if (date instanceof Date) {
@@ -84,13 +107,10 @@ export const getNumberOfWeeks = (date: Date, weekStart: number = 0) => {
   );
 };
 
-export const getWeekDays = (date: Date) => {};
-
-export const getAllDays = (date: Date, weekStart: number) => {
-  // return
-};
-
-// (i - ) % 7
+/**
+ * TODO: 주 단위로 날짜 데이터 받아오는 함수 구현
+ */
+export const getWeeklyDays = (date: Date) => {};
 
 export const getAllWeekDays = (weekStart: number) => {
   let newWeekDays: { key: number; value: string }[] = [];
@@ -110,13 +130,15 @@ const OTHER_MONTH: MonthSatus = 'otherMonth';
 
 export const getMonthlyDays = (
   currentFullDate: Date,
-  weekStart: number
+  weekStart: number,
+  showFixedNumberOfWeeks?: number
 ): MonthlyDays => {
   const currentYear = getYear(currentFullDate);
   const currentMonth = getMonth(currentFullDate);
   const weekStartIndex = getWeekStartIndex(currentFullDate, weekStart); // 한 주의 시작 요일로 재설정한 현재 달의 시작 인덱스
   const lastDate = getMonthEnd(currentFullDate); // 현재 달의 마지막 날짜
-  const numberOfWeeks = getNumberOfWeeks(currentFullDate, weekStart); // 현재 달의 주 수
+  const numberOfWeeks =
+    showFixedNumberOfWeeks ?? getNumberOfWeeks(currentFullDate, weekStart); // 현재 달의 주 수
 
   // 이전 달 날짜 배열
   const daysOfPrevMonth = Array.from({ length: weekStartIndex }, (_, i) => {

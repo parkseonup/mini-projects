@@ -9,7 +9,7 @@ export default function Calendar({
   selectedDate?: Date;
 }) {
   const { headers, body, movePrevMonth, moveNextMonth, changeWeekStart } =
-    useCalendar();
+    useCalendar({});
 
   return (
     <>
