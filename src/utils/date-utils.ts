@@ -69,7 +69,7 @@ export const getDay = (date: Date) => {
 
 export const getDateToString = (date: Date) => {
   if (date instanceof Date) {
-    return `${getYear(date)}-${(getMonth(date) + '').padStart(2, '0')}-${(
+    return `${getYear(date)}-${(getMonth(date) + 1 + '').padStart(2, '0')}-${(
       getDate(date) + ''
     ).padStart(2, '0')}`;
   }
