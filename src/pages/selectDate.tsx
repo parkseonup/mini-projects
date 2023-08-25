@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import { getDateToString } from '../utils/date-utils';
-import DatePicker from '../components/DatePicker';
+import Calendar from '../components/Calendar';
 
 export default function SelectDate() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [isActive, setIsActive] = useState(false);
+  const [isHiddenCalendar, setIsHiddenCalendar] = useState(true);
 
   const toggleDatePicker = () => {
-    setIsActive(!isActive);
+    setIsHiddenCalendar(!isHiddenCalendar);
   };
 
   const handleClickDate = (date: Date) => {
     setSelectedDate(date);
-    setIsActive(false);
+    setIsHiddenCalendar(false);
   };
 
   return (
@@ -30,11 +30,16 @@ export default function SelectDate() {
           Select Date
         </button>
 
-        <DatePicker
-          selectedDate={selectedDate}
-          onSelect={handleClickDate}
-          isActive={isActive}
-        />
+        {isHiddenCalendar || (
+          <div>
+            <Calendar
+              selectedDate={selectedDate}
+              onSelect={handleClickDate}
+              startDate={new Date()}
+              endDate={new Date('2023-08-30')}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

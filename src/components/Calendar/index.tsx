@@ -4,12 +4,29 @@ import { getDate, weekDays } from '../../utils/date-utils';
 export default function Calendar({
   onSelect,
   selectedDate,
+  startDate,
+  endDate,
 }: {
   onSelect?: (date: Date) => any;
   selectedDate?: Date;
+  startDate?: Date;
+  endDate?: Date;
 }) {
   const { headers, body, movePrevMonth, moveNextMonth, changeWeekStart } =
     useCalendar({});
+
+  const getIsAvailableDate = (date: Date) => {
+    const dateString = date.toDateString();
+
+    return (
+      (startDate
+        ? dateString === startDate?.toDateString() || date > startDate
+        : true) &&
+      (endDate
+        ? dateString === endDate?.toDateString() || date < endDate
+        : true)
+    );
+  };
 
   return (
     <>
@@ -55,15 +72,26 @@ export default function Calendar({
         <tbody>
           {body.value.map(({ key, value: days }) => (
             <tr key={key}>
-              {days.map(({ key, value }) => (
-                <td
-                  key={key}
-                  className={selectedDate === value ? 'selected' : ''}
-                  onClick={() => onSelect && onSelect(value)}
-                >
-                  {getDate(value)}
-                </td>
-              ))}
+              {days.map(({ key, value }) => {
+                const isAvailable = getIsAvailableDate(value);
+
+                return (
+                  <td
+                    key={key}
+                    className={
+                      (isAvailable ? 'available' : 'unavailable') +
+                      ' ' +
+                      (selectedDate === value ? 'selected' : '')
+                    }
+                    onClick={() =>
+                      isAvailable ? onSelect && onSelect(value) : null
+                    }
+                    tabIndex={isAvailable ? 0 : -1}
+                  >
+                    {getDate(value)}
+                  </td>
+                );
+              })}
             </tr>
           ))}
         </tbody>
