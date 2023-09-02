@@ -29,6 +29,7 @@ export default function useForm(initialValue: { [name: string]: string }) {
   const [errors, setErrors] = useState<Errors>({});
   const validations = useRef<Validation>({});
 
+  // TODO: object lookup table로 변경하기
   const getError = (value: string, type: string, condition: any) => {
     switch (type) {
       case 'require': {
@@ -61,12 +62,10 @@ export default function useForm(initialValue: { [name: string]: string }) {
     setFields((fields) => ({
       ...fields,
       [name]: {
-        ...fields[name],
         value,
         isDirty: true,
       },
     }));
-
     setErrors((errors) => ({
       ...errors,
       [name]: error,
@@ -100,6 +99,7 @@ export default function useForm(initialValue: { [name: string]: string }) {
   useEffect(() => {
     const fields: Fields = {};
 
+    // TODO: initialValue는 이미 값이 들어간 상태인데 isDirty
     Object.entries(initialValue).forEach(([name, value]) => {
       fields[name] = {
         isDirty: false,

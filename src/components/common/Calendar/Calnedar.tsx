@@ -1,5 +1,5 @@
-import useCalendar from '../../hooks/useCalendar';
-import { getDate, weekDays } from '../../utils/date-utils';
+import useCalendar from './useCalendar';
+import { getDate, weekDays } from './date-utils';
 
 export default function Calendar({
   onSelect,

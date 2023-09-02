@@ -1,5 +1,5 @@
 import { FormEvent } from 'react';
-import useForm from '../hooks/useForm';
+import useForm from '../components/hooks/useForm';
 
 // TODO: register로 등록하는게 나아보일까? 아니면 useForm에 전달하는게 나아보일까?
 export default function SignUp() {

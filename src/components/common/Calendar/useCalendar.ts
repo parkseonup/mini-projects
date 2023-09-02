@@ -7,7 +7,7 @@ import {
   getMonthlyDays,
   getYear,
   weekStartByCountry,
-} from '../utils/date-utils';
+} from './date-utils';
 
 export type CalendarData = {
   headers: {
