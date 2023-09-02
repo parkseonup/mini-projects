@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { getDateToString } from '../utils/date-utils';
-import Calendar from '../components/Calendar';
+import { getDateToString } from '../components/common/Calendar/date-utils';
+import Calendar from '../components/common/Calendar/Calnedar';
 
 export default function SelectDate() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -12,7 +12,7 @@ export default function SelectDate() {
 
   const handleClickDate = (date: Date) => {
     setSelectedDate(date);
-    setIsHiddenCalendar(false);
+    setIsHiddenCalendar(true);
   };
 
   return (
@@ -36,7 +36,7 @@ export default function SelectDate() {
               selectedDate={selectedDate}
               onSelect={handleClickDate}
               startDate={new Date()}
-              endDate={new Date('2023-08-30')}
+              endDate={new Date('2023-11-24')}
             />
           </div>
         )}
