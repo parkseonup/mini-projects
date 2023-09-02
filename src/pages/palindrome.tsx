@@ -1,9 +1,7 @@
 import { SyntheticEvent, useEffect, useRef, useState } from 'react';
-import useValidPalindrome from '../hooks/useVaildPalindrome';
 
 export default function Palindrome() {
   const [validationValue, setValidationValue] = useState('');
-  const validationResult = useValidPalindrome(validationValue);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onSubmit = (e: SyntheticEvent) => {
@@ -35,11 +33,11 @@ export default function Palindrome() {
         <button type='submit'>Check</button>
 
         <output htmlFor='palindromeText'>
-          {validationResult
-            ? `${validationValue} is a palindrome`
-            : validationValue === ''
-            ? ''
-            : `${validationValue} is not a palindrome`}
+          {validationValue !== ''
+            ? validationValue === [...validationValue].reverse().join('')
+              ? `${validationValue} is a palindrome`
+              : `${validationValue} is not a palindrome`
+            : ''}
         </output>
       </form>
     </>
