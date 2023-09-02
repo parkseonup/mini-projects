@@ -6,6 +6,7 @@ import Counter from './pages/counter';
 import Palindrome from './pages/palindrome';
 import Calendar from './pages/calendar';
 import SelectDate from './pages/selectDate';
+import SignUp from './pages/signUp';
 
 export const router = createBrowserRouter([
   {
@@ -29,8 +30,12 @@ export const router = createBrowserRouter([
         element: <Calendar />,
       },
       {
-        path: '/selectDate',
+        path: '/selectdate',
         element: <SelectDate />,
+      },
+      {
+        path: '/signup',
+        element: <SignUp />,
       },
     ],
   },
