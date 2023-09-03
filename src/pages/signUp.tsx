@@ -1,13 +1,35 @@
-import { FormEvent } from 'react';
+import { FormEvent, useRef } from 'react';
 import useForm from '../components/hooks/useForm';
 
-// TODO: register로 등록하는게 나아보일까? 아니면 useForm에 전달하는게 나아보일까?
 export default function SignUp() {
-  const { fields, errors, register, validate } = useForm({
-    name: '',
-    email: '',
-    password: '',
-    checkPassword: '',
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const { fields, errors, validate } = useForm({
+    name: {
+      validation: {
+        require: true,
+        minLength: 2,
+      },
+    },
+    email: {
+      validation: {
+        require: true,
+        pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+      },
+    },
+    password: {
+      validation: {
+        require: true,
+        pattern: /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/,
+      },
+    },
+    checkPassword: {
+      validation: {
+        require: true,
+        custom: (thisValue) => {
+          return fields.password.isDirty && fields.password.value === thisValue;
+        },
+      },
+    },
   });
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -17,6 +39,8 @@ export default function SignUp() {
       ? console.log('성공')
       : console.log('실패!');
   };
+
+  console.log('[errors]', errors);
 
   return (
     <>
@@ -28,7 +52,6 @@ export default function SignUp() {
             이름:
             <input
               type='text'
-              {...register('name', { require: true, minLength: 2 })}
               onBlur={(e) => validate('name', e.target.value)}
             />
           </label>
@@ -43,10 +66,8 @@ export default function SignUp() {
             이메일:
             <input
               type='email'
-              {...register('email', {
-                require: true,
-                pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-              })}
+              name='email'
+              required
               onBlur={(e) => validate('email', e.target.value)}
             />
           </label>
@@ -63,10 +84,9 @@ export default function SignUp() {
             비밀번호:
             <input
               type='password'
-              {...register('password', {
-                require: true,
-                pattern: /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/,
-              })}
+              name='password'
+              ref={passwordRef}
+              required
               onBlur={(e) => validate('password', e.target.value)}
             />
           </label>
@@ -83,17 +103,16 @@ export default function SignUp() {
             비밀번호 확인:
             <input
               type='password'
-              {...register('checkPassword', {
-                require: true,
-                check: fields.password,
-              })}
+              name='password'
+              required
               onBlur={(e) => validate('checkPassword', e.target.value)}
             />
           </label>
 
           {errors.checkPassword?.includes('require') ? (
             <p>비밀번호를 한번 더 입력해주세요.</p>
-          ) : errors.checkPassword?.includes('check') ? (
+          ) : errors.checkPassword?.includes('custom') ||
+            errors.password?.includes('custom') ? (
             <p>비밀번호가 일치하지 않습니다.</p>
           ) : null}
         </div>

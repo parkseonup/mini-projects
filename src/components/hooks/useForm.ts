@@ -1,62 +1,32 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
+import {
+  Errors,
+  Fields,
+  UseFormProp,
+  ValidationType,
+} from '../../types/components/useForm';
 
-interface Validation {
-  require?: true;
-  minLength?: number;
-  maxLength?: number;
-  pattern?: RegExp;
-  check?: Field;
-  [type: string]: any;
-}
+export default function useForm(initialInfo: UseFormProp) {
+  const initailFields: Fields = {};
 
-type Error = (keyof Validation)[];
+  Object.entries(initialInfo).forEach(([name]) => {
+    initailFields[name] = {
+      isDirty: false,
+      value: '',
+    };
+  });
 
-interface Errors {
-  [name: string]: Error;
-}
-
-interface Field {
-  value: string;
-  isDirty: boolean;
-}
-
-interface Fields {
-  [name: string]: Field;
-}
-
-export default function useForm(initialValue: { [name: string]: string }) {
-  const [fields, setFields] = useState<Fields>({});
+  const [fields, setFields] = useState<Fields>(initailFields);
   const [errors, setErrors] = useState<Errors>({});
-  const validations = useRef<Validation>({});
-
-  // TODO: object lookup table로 변경하기
-  const getError = (value: string, type: string, condition: any) => {
-    switch (type) {
-      case 'require': {
-        return value.length === 0 ? true : false;
-      }
-      case 'minLength': {
-        return value.length < condition ? true : false;
-      }
-      case 'maxLength': {
-        return value.length > condition ? true : false;
-      }
-      case 'pattern': {
-        return !condition.test(value);
-      }
-      case 'check': {
-        if (!condition.isDirty) return false;
-
-        return value === condition.value ? false : true;
-      }
-    }
-  };
 
   // TODO: checkPassword가 dirty일 때 password를 작성하면 checkPassword도 같이 유효성 검사해줘야 함.
   const validate = useCallback((name: string, value: string) => {
-    const error = Object.keys(validations.current[name]).filter((type) => {
-      const condition = validations.current[name][type];
-      return getError(value, type, condition);
+    const { validation } = initialInfo[name];
+    const newErrors = (
+      Object.keys(validation) as (keyof typeof validation)[]
+    ).filter((type) => {
+      const condition = validation[type];
+      return getOwnErrors(value, type, condition);
     });
 
     setFields((fields) => ({
@@ -68,52 +38,44 @@ export default function useForm(initialValue: { [name: string]: string }) {
     }));
     setErrors((errors) => ({
       ...errors,
-      [name]: error,
+      [name]: newErrors,
     }));
   }, []);
 
-  /**
-   * 유효성 검사를 할 입력폼을 등록하는 함수
-   *
-   * @param {string} name 입력폼의 name 값으로 할당될 값
-   * @param {string} initialValue 입력폼의 defaultValue로 할당될 값
-   * @param {Validation} validation 입력폼의 유효성 검증 조건
-   * @returns
-   */
-  const register = (name: string, validation: Validation) => {
-    validations.current = {
-      ...validations.current,
-      [name]: validation,
-    };
-
-    return validation.require
-      ? {
-          name,
-          defaultValue: initialValue[name],
-          required: true,
-        }
-      : { name, defaultValue: initialValue[name] };
-  };
-
-  /** 초기 fields 구성 */
-  useEffect(() => {
-    const fields: Fields = {};
-
-    // TODO: initialValue는 이미 값이 들어간 상태인데 isDirty
-    Object.entries(initialValue).forEach(([name, value]) => {
-      fields[name] = {
-        isDirty: false,
-        value,
-      };
-    });
-
-    setFields(fields);
-  }, []);
-
   return {
-    fields,
-    register,
+    fields: fields,
     validate,
     errors,
+    setErrors,
   };
 }
+
+/**
+ * 유효성 검사를 하기위한 validation 속성들의 error 조건
+ *
+ * @param {string} value 입력폼의 값
+ * @param {string} type validation 타입
+ * @param condition
+ * @returns
+ */
+const getOwnErrors = (value: string, type: ValidationType, condition: any) => {
+  const result = {
+    require: () => (value.length === 0 ? true : false),
+    minLength: () => (value.length < condition ? true : false),
+    maxLength: () => (value.length > condition ? true : false),
+    pattern: () => {
+      if (condition instanceof RegExp) return !condition.test(value);
+
+      throw new Error(`${condition}은 RegExp의 인스턴스가 아닙니다.`);
+    },
+    custom: () => {
+      if (condition instanceof Function) {
+        return condition(value);
+      }
+
+      throw new Error(`${condition}은 function이 아닙니다.`);
+    },
+  };
+
+  return result[type]();
+};
