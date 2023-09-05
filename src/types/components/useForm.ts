@@ -1,13 +1,15 @@
 interface Validation {
-  require?: boolean;
+  required?: boolean;
   minLength?: number;
   maxLength?: number;
   pattern?: RegExp;
+  observer?: string;
   custom?: (param: any) => any;
+  [index: string]: any;
 }
 
 type ValidationType =
-  | 'require'
+  | 'required'
   | 'minLength'
   | 'maxLength'
   | 'pattern'
@@ -19,7 +21,7 @@ interface UseFormProp {
   };
 }
 
-type Error = ValidationType[];
+type Error = (keyof Validation)[];
 
 interface Errors {
   [name: string]: Error;
@@ -34,6 +36,10 @@ interface Fields {
   [name: string]: Field;
 }
 
+interface GetOwnErrorsResult {
+  [name: string]: any;
+}
+
 export {
   Validation,
   ValidationType,
@@ -42,4 +48,5 @@ export {
   Errors,
   Field,
   Fields,
+  GetOwnErrorsResult,
 };

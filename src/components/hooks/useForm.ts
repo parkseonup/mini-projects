@@ -1,30 +1,26 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import {
   Errors,
   Fields,
-  UseFormProp,
-  ValidationType,
+  GetOwnErrorsResult,
+  Validation,
 } from '../../types/components/useForm';
 
-export default function useForm(initialInfo: UseFormProp) {
-  const initailFields: Fields = {};
-
-  Object.entries(initialInfo).forEach(([name]) => {
-    initailFields[name] = {
-      isDirty: false,
-      value: '',
-    };
-  });
-
-  const [fields, setFields] = useState<Fields>(initailFields);
+export default function useForm() {
+  const [fields, setFields] = useState<Fields>();
   const [errors, setErrors] = useState<Errors>({});
+  const validations = useRef<Validation>({});
+  const formRef = useRef({});
 
   // TODO: checkPassword가 dirty일 때 password를 작성하면 checkPassword도 같이 유효성 검사해줘야 함.
   const validate = useCallback((name: string, value: string) => {
-    const { validation } = initialInfo[name];
-    const newErrors = (
-      Object.keys(validation) as (keyof typeof validation)[]
-    ).filter((type) => {
+    if (!validations.current) return;
+
+    const validation = validations.current[name];
+
+    if (!validation) return;
+
+    const newErrors = Object.keys(validation).filter((type) => {
       const condition = validation[type];
       return getOwnErrors(value, type, condition);
     });
@@ -42,11 +38,43 @@ export default function useForm(initialInfo: UseFormProp) {
     }));
   }, []);
 
+  /**
+   * 유효성 검사를 할 입력폼을 등록하는 함수
+   *
+   * @param {string} name 입력폼의 name 값으로 할당될 값
+   * @param {Validation} validation 입력폼의 유효성 검증 조건
+   * @returns
+   */
+  const register = (name: string, validation: Validation) => {
+    if (!formRef.current) return;
+    if (!validations.current) return;
+
+    const ref = useRef<HTMLInputElement>(null);
+
+    validations.current = {
+      ...validations.current,
+      [name]: validation,
+    };
+
+    formRef.current = {
+      ...formRef.current,
+      [name]: ref.current,
+    };
+
+    return validation.required
+      ? {
+          name,
+          ref,
+          required: true,
+        }
+      : { name, ref };
+  };
+
   return {
-    fields: fields,
-    validate,
+    fields,
     errors,
-    setErrors,
+    validate,
+    register,
   };
 }
 
@@ -58,9 +86,9 @@ export default function useForm(initialInfo: UseFormProp) {
  * @param condition
  * @returns
  */
-const getOwnErrors = (value: string, type: ValidationType, condition: any) => {
-  const result = {
-    require: () => (value.length === 0 ? true : false),
+const getOwnErrors = (value: string, type: string, condition: any) => {
+  const result: GetOwnErrorsResult = {
+    required: () => (value.length === 0 ? true : false),
     minLength: () => (value.length < condition ? true : false),
     maxLength: () => (value.length > condition ? true : false),
     pattern: () => {
@@ -75,7 +103,10 @@ const getOwnErrors = (value: string, type: ValidationType, condition: any) => {
 
       throw new Error(`${condition}은 function이 아닙니다.`);
     },
+    undefined: () => {
+      throw new Error(`존재하지 않는 ${type}입니다.`);
+    },
   };
 
-  return result[type]();
+  return result[type] ? result[type]() : result.undefined();
 };
