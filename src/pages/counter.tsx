@@ -1,7 +1,7 @@
 import { ErrorBoundary } from 'react-error-boundary';
-import ButtonsToChangeCount from '../components/unit/Counter/buttonToChangeCount';
+import ButtonsToChangeCount from '../components/unit/Counter/ButtonToChangeCount';
 import useTimer from '../components/unit/Counter/useTimer';
-import FallbackCountError from '../components/unit/Counter/fallbackCountError';
+import FallbackCountError from '../components/unit/Counter/FallbackCountError';
 
 export default function SimpleCounter() {
   const { count, setCount, isRunning, toggleRunning, resetRunning } =
