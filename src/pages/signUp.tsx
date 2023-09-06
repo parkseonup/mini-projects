@@ -1,4 +1,4 @@
-import { FormEvent, RefObject } from 'react';
+import { FormEvent } from 'react';
 import useForm from '../components/hooks/useForm';
 
 export default function SignUp() {
