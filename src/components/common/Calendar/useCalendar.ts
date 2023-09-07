@@ -1,28 +1,13 @@
 import { useMemo, useRef, useState } from 'react';
 import {
-  MonthlyDays,
-  getAllWeekDays,
+  getWeekDays,
   getDate,
   getMonth,
   getMonthlyDays,
   getYear,
   weekStartByCountry,
 } from './date-utils';
-
-export type CalendarData = {
-  headers: {
-    current: {
-      year: number;
-      month: number;
-    };
-    weekStart: number;
-    weekDays: { key: number; value: string }[];
-  };
-  body: {
-    value: MonthlyDays;
-    today: Date;
-  };
-};
+import { CalendarData } from '../../../types/components/useCalendar';
 
 export default function uesCalendar({
   showFixedNumberOfWeeks,
@@ -39,9 +24,7 @@ export default function uesCalendar({
   const [weekStart, setWeekStart] = useState(
     weekStartByCountry[locale ?? navigator.language]
   );
-  const [currentFullDate, setCurrentFullDate] = useState(
-    new Date(today.current.setDate(1))
-  );
+  const [currentFullDate, setCurrentFullDate] = useState(today.current);
   const currentYear = getYear(currentFullDate);
   const currentMonth = getMonth(currentFullDate);
   const currentDate = getDate(currentFullDate);
@@ -54,7 +37,7 @@ export default function uesCalendar({
           month: currentMonth,
         },
         weekStart,
-        weekDays: getAllWeekDays(weekStart),
+        weekDays: getWeekDays(weekStart),
       },
       body: {
         value: getMonthlyDays(
