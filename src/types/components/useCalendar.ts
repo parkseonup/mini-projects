@@ -1,6 +1,22 @@
-import { MonthlyDays } from '../../components/common/Calendar/date-utils.type';
+import { MonthSatus } from '../../components/common/Calendar/date-utils.type';
 
-export type CalendarData = {
+interface UseCalendarProps {
+  showFixedNumberOfWeeks?: number;
+  locale?: string;
+}
+
+interface MonthlyDay {
+  value: {
+    key: string;
+    value: Date;
+    status: MonthSatus;
+  }[];
+  key: number;
+}
+
+type MonthlyDays = MonthlyDay[];
+
+interface CalendarData {
   headers: {
     current: {
       year: number;
@@ -18,4 +34,6 @@ export type CalendarData = {
     movePrevMonth: () => void;
     moveNextMonth: () => void;
   };
-};
+}
+
+export { UseCalendarProps, MonthlyDay, MonthlyDays, CalendarData };

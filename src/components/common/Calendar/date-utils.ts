@@ -1,4 +1,4 @@
-import { MonthSatus, MonthlyDays } from './date-utils.type';
+import { MonthSatus } from './date-utils.type';
 
 export const ONE_WEEK = 7;
 export const weekDays = ['SUN', 'MON', 'TUE', 'WEN', 'THU', 'FRI', 'SAT'];
@@ -83,22 +83,6 @@ export const getDay = (date: Date) => {
 };
 
 /**
- * 날짜를 YY-mm-dd 형태의 문자열로 변환하는 함수
- *
- * @param {Date} date
- * @returns {string} YY-mm-dd 형태의 문자열
- */
-export const getDateToString = (date: Date) => {
-  if (date instanceof Date) {
-    return `${getYear(date)}-${(getMonth(date) + 1 + '').padStart(2, '0')}-${(
-      getDate(date) + ''
-    ).padStart(2, '0')}`;
-  }
-
-  throw new Error(`Failed to get date string from date: ${date}`);
-};
-
-/**
  * 특정 달의 요일을 구하는 함수
  *
  * @param {Date} date
@@ -152,6 +136,22 @@ export const getNumberOfWeeks = (date: Date, weekStartDay: number = 0) => {
   return Math.ceil(
     (getMonthStartIndex(date, weekStartDay) + getMonthEndDate(date)) / ONE_WEEK
   );
+};
+
+/**
+ * 날짜를 YY-mm-dd 형태의 문자열로 변환하는 함수
+ *
+ * @param {Date} date
+ * @returns {string} YY-mm-dd 형태의 문자열
+ */
+export const getDateToString = (date: Date) => {
+  if (date instanceof Date) {
+    return `${getYear(date)}-${(getMonth(date) + 1 + '').padStart(2, '0')}-${(
+      getDate(date) + ''
+    ).padStart(2, '0')}`;
+  }
+
+  throw new Error(`Failed to get date string from date: ${date}`);
 };
 
 /**

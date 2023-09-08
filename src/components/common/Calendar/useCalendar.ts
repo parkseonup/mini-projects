@@ -10,16 +10,16 @@ import {
   getMonthStartIndex,
   getWeeklyDays,
 } from './date-utils';
-import { CalendarData } from '../../../types/components/useCalendar';
-import { MonthlyDays } from './date-utils.type';
+import {
+  CalendarData,
+  MonthlyDays,
+  UseCalendarProps,
+} from '../../../types/components/useCalendar';
 
 export default function uesCalendar({
   showFixedNumberOfWeeks,
   locale,
-}: {
-  showFixedNumberOfWeeks?: number;
-  locale?: string;
-}): CalendarData {
+}: UseCalendarProps): CalendarData {
   const today = new Date();
   const [weekStart, setWeekStart] = useState(
     weekStartByCountry[locale ?? navigator.language]
