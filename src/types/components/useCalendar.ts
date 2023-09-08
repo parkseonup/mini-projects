@@ -1,6 +1,7 @@
 import { MonthSatus } from '../../components/common/Calendar/date-utils.type';
 
 interface UseCalendarProps {
+  selectedMonth?: string;
   showFixedNumberOfWeeks?: number;
   locale?: string;
 }

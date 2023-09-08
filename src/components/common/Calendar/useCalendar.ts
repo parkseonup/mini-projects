@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   getWeekDays,
   getDate,
@@ -18,13 +18,17 @@ import {
 
 export default function uesCalendar({
   showFixedNumberOfWeeks,
+  selectedMonth,
   locale,
 }: UseCalendarProps): CalendarData {
   const today = new Date();
+  const [currentFullDate, setCurrentFullDate] = useState(
+    selectedMonth ? new Date(selectedMonth) : setFirstDate(today)
+  );
   const [weekStart, setWeekStart] = useState(
     weekStartByCountry[locale ?? navigator.language]
   );
-  const [currentFullDate, setCurrentFullDate] = useState(setFirstDate(today));
+
   const currentYear = getYear(currentFullDate);
   const currentMonth = getMonth(currentFullDate);
   const currentDate = getDate(currentFullDate);
