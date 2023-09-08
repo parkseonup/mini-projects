@@ -14,8 +14,8 @@ export type CalendarData = {
     today: Date;
   };
   view: {
+    changeWeekStart: (day: number) => void;
     movePrevMonth: () => void;
     moveNextMonth: () => void;
-    changeWeekStart: (day: number) => void;
   };
 };

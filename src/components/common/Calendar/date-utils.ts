@@ -204,31 +204,3 @@ export const setFirstDate = (date: Date) => {
   date.setDate(1);
   return date;
 };
-
-export const getMonthlyDays = (
-  currentFullDate: Date,
-  weekStartDay: number,
-  showFixedNumberOfWeeks?: number
-): MonthlyDays => {
-  const currentFirstDate = setFirstDate(currentFullDate);
-  const currentYear = getYear(currentFirstDate);
-  const currentMonth = getMonth(currentFirstDate);
-  const numberOfWeeks =
-    showFixedNumberOfWeeks ?? getNumberOfWeeks(currentFirstDate, weekStartDay); // 출력될 달의 주 수
-
-  // 달력에 출력될 첫번째 날짜를 구한다. (이전/현재/다음 달 상관없이)
-  const monthStartDate = new Date(currentFirstDate);
-  monthStartDate.setDate(
-    1 - getMonthStartIndex(currentFirstDate, weekStartDay)
-  );
-
-  return Array.from({ length: numberOfWeeks }, (_, i) => {
-    const date = new Date(monthStartDate);
-    date.setDate(getDate(monthStartDate) + 7 * i);
-
-    return {
-      key: currentYear * currentMonth * weekStartDay + i,
-      value: getWeeklyDays(date, currentMonth),
-    };
-  });
-};
