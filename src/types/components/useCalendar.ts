@@ -13,4 +13,9 @@ export type CalendarData = {
     value: MonthlyDays;
     today: Date;
   };
+  view: {
+    movePrevMonth: () => void;
+    moveNextMonth: () => void;
+    changeWeekStart: (day: number) => void;
+  };
 };

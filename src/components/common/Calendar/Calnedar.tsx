@@ -12,8 +12,11 @@ export default function Calendar({
   startDate?: Date;
   endDate?: Date;
 }) {
-  const { headers, body, movePrevMonth, moveNextMonth, changeWeekStart } =
-    useCalendar({});
+  const {
+    headers,
+    body,
+    view: { movePrevMonth, moveNextMonth, changeWeekStart },
+  } = useCalendar({});
 
   const getIsAvailableDate = (date: Date) => {
     const dateString = date.toDateString();
