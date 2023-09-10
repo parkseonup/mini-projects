@@ -1,3 +1,4 @@
+import { MonthlyDate } from '../../../types/components/useCalendar';
 import { MonthSatus } from './date-utils.type';
 
 export const ONE_WEEK = 7;
@@ -111,13 +112,24 @@ export const getMonthEndDate = (date: Date) => {
 };
 
 /**
+ * 특정 달의 1일 날짜를 구하는 함수
+ *
+ * @param {Date} date
+ * @returns {Date}
+ */
+export const setFirstDate = (date: Date) => {
+  date.setDate(1);
+  return date;
+};
+
+/**
  * 한 주의 시작 요일을 기준으로 특정 달이 시작하는 날짜의 index를 구하는 함수
  *
  * @param {Date} date
  * @param {number} weekStartDay 한 주의 시작 요일(0 ~ 6)
  * @returns {number} 0 ~ 6
  */
-export const getMonthStartIndex = (date: Date, weekStartDay: number = 0) => {
+export const getMonthlyStartIndex = (date: Date, weekStartDay: number = 0) => {
   const startDay = getMonthFirstDay(date);
 
   return weekStartDay - startDay > 0
@@ -134,7 +146,8 @@ export const getMonthStartIndex = (date: Date, weekStartDay: number = 0) => {
  */
 export const getNumberOfWeeks = (date: Date, weekStartDay: number = 0) => {
   return Math.ceil(
-    (getMonthStartIndex(date, weekStartDay) + getMonthEndDate(date)) / ONE_WEEK
+    (getMonthlyStartIndex(date, weekStartDay) + getMonthEndDate(date)) /
+      ONE_WEEK
   );
 };
 
@@ -153,25 +166,6 @@ export const getDateToString = (date: Date) => {
 
   throw new Error(`Failed to get date string from date: ${date}`);
 };
-
-/**
- * 주 단위의 날짜 데이터를 구하는 함수
- *
- * @param {Date} startDate 한 주의 시작날짜
- * @param {number} currentMonth 현재 달
- * @returns {{key: string, value: Date, status: MonthSatus}[]}
- */
-export const getWeeklyDays = (startDate: Date, currentMonth: number) =>
-  Array.from({ length: ONE_WEEK }, (_, i) => {
-    const date = new Date(startDate);
-    date.setDate(getDate(startDate) + i);
-
-    return {
-      key: `${date}`,
-      value: date,
-      status: currentMonth === getMonth(date) ? THIS_MONTH : OTHER_MONTH,
-    };
-  });
 
 /**
  * 달력에 출력될 요일 목록을 구하는 함수
@@ -195,12 +189,48 @@ export const getWeekDays = (weekStartDay: number) => {
 };
 
 /**
- * 특정 달의 1일 날짜를 구하는 함수
+ * 주 단위의 날짜 데이터를 구하는 함수
  *
- * @param {Date} date
- * @returns {Date}
+ * @param {Date} startDate 한 주의 시작날짜
+ * @param {number} currentMonth 현재 달
+ * @returns {{key: string, value: Date, status: MonthSatus}[]}
  */
-export const setFirstDate = (date: Date) => {
-  date.setDate(1);
-  return date;
+export const getWeeklyDate = (startDate: Date, currentMonth: number) =>
+  Array.from({ length: ONE_WEEK }, (_, i) => {
+    const date = new Date(startDate);
+    date.setDate(getDate(startDate) + i);
+
+    return {
+      key: `${date}`,
+      value: date,
+      status: currentMonth === getMonth(date) ? THIS_MONTH : OTHER_MONTH,
+    };
+  });
+
+/**
+ * 2*2 배열로 날짜 데이터를 구하는 함수
+ * @return {MonthlyDays}
+ */
+export const getMonthlyDate = (
+  date: Date,
+  weekStart: number,
+  showFixedNumberOfWeeks?: number
+): MonthlyDate => {
+  const numberOfWeeks =
+    showFixedNumberOfWeeks ?? getNumberOfWeeks(date, weekStart); // 출력될 달의 주 수
+
+  // 달력에 출력될 첫번째 날짜를 구한다. (이전/현재/다음 달 상관없이)
+  const monthlyStartDate = setFirstDate(new Date(date));
+  monthlyStartDate.setDate(1 - getMonthlyStartIndex(date, weekStart));
+
+  return Array.from({ length: numberOfWeeks }, (_, i) => {
+    const newDate = new Date(monthlyStartDate);
+    newDate.setDate(getDate(monthlyStartDate) + 7 * i);
+
+    return {
+      key: getYear(date) * getMonth(date) * weekStart + i,
+      value: getWeeklyDate(newDate, getMonth(date)),
+    };
+  });
 };
+

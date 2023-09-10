@@ -1,29 +1,26 @@
-import { useCallback, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   getWeekDays,
   getDate,
   getMonth,
   getYear,
   weekStartByCountry,
-  setFirstDate,
-  getNumberOfWeeks,
-  getMonthStartIndex,
-  getWeeklyDays,
+  getMonthlyDate,
 } from './date-utils';
 import {
   CalendarData,
-  MonthlyDays,
+  MonthlyDate,
   UseCalendarProps,
 } from '../../../types/components/useCalendar';
 
 export default function uesCalendar({
+  showDate,
   showFixedNumberOfWeeks,
-  selectedMonth,
   locale,
 }: UseCalendarProps): CalendarData {
   const today = new Date();
   const [currentFullDate, setCurrentFullDate] = useState(
-    selectedMonth ? new Date(selectedMonth) : setFirstDate(today)
+    showDate ? new Date(showDate) : today
   );
   const [weekStart, setWeekStart] = useState(
     weekStartByCountry[locale ?? navigator.language]
@@ -33,28 +30,10 @@ export default function uesCalendar({
   const currentMonth = getMonth(currentFullDate);
   const currentDate = getDate(currentFullDate);
 
-  /**
-   * 2*2 배열로 날짜 데이터를 구하는 함수
-   * @return {MonthlyDays}
-   */
-  const getMonthlyDays = useCallback((): MonthlyDays => {
-    const numberOfWeeks =
-      showFixedNumberOfWeeks ?? getNumberOfWeeks(currentFullDate, weekStart); // 출력될 달의 주 수
-
-    // 달력에 출력될 첫번째 날짜를 구한다. (이전/현재/다음 달 상관없이)
-    const monthStartDate = new Date(currentFullDate);
-    monthStartDate.setDate(1 - getMonthStartIndex(currentFullDate, weekStart));
-
-    return Array.from({ length: numberOfWeeks }, (_, i) => {
-      const date = new Date(monthStartDate);
-      date.setDate(getDate(monthStartDate) + 7 * i);
-
-      return {
-        key: currentYear * currentMonth * weekStart + i,
-        value: getWeeklyDays(date, currentMonth),
-      };
-    });
-  }, [showFixedNumberOfWeeks, currentFullDate, weekStart]);
+  const monthlyDate: MonthlyDate = useMemo(
+    () => getMonthlyDate(currentFullDate, weekStart, showFixedNumberOfWeeks),
+    [currentFullDate, weekStart, showFixedNumberOfWeeks]
+  );
 
   const movePrevMonth = () => {
     setCurrentFullDate(new Date(currentYear, currentMonth - 1, currentDate));
@@ -78,7 +57,7 @@ export default function uesCalendar({
       weekDays: getWeekDays(weekStart),
     },
     body: {
-      value: getMonthlyDays(),
+      value: monthlyDate,
       today,
     },
     view: {

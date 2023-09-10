@@ -1,21 +1,23 @@
 import { MonthSatus } from '../../components/common/Calendar/date-utils.type';
 
 interface UseCalendarProps {
-  selectedMonth?: string;
+  showDate?: string;
   showFixedNumberOfWeeks?: number;
   locale?: string;
 }
 
-interface MonthlyDay {
-  value: {
-    key: string;
-    value: Date;
-    status: MonthSatus;
-  }[];
-  key: number;
+interface DailyDate {
+  key: string;
+  value: Date;
+  status: MonthSatus;
 }
 
-type MonthlyDays = MonthlyDay[];
+type WeeklyDate = DailyDate[];
+
+type MonthlyDate = {
+  key: number;
+  value: WeeklyDate;
+}[];
 
 interface CalendarData {
   headers: {
@@ -27,7 +29,7 @@ interface CalendarData {
     weekDays: { key: number; value: string }[];
   };
   body: {
-    value: MonthlyDays;
+    value: MonthlyDate;
     today: Date;
   };
   view: {
@@ -37,4 +39,4 @@ interface CalendarData {
   };
 }
 
-export { UseCalendarProps, MonthlyDay, MonthlyDays, CalendarData };
+export { UseCalendarProps, DailyDate, WeeklyDate, MonthlyDate, CalendarData };
