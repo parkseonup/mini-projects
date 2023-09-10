@@ -1,80 +1,66 @@
-import { useCallback, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import {
+  Values,
   Errors,
-  Fields,
   GetOwnErrorsResult,
   Validation,
 } from '../../types/components/useForm';
 
 export default function useForm() {
-  const [fields, setFields] = useState<Fields>();
   const [errors, setErrors] = useState<Errors>({});
-  const validations = useRef<Validation>({});
-  const formRef = useRef({});
+  const valuesRef = useRef<Values>({});
 
-  // TODO: checkPassword가 dirty일 때 password를 작성하면 checkPassword도 같이 유효성 검사해줘야 함.
-  const validate = useCallback((name: string, value: string) => {
-    if (!validations.current) return;
+  /**
+   * input value값을 반환하는 함수
+   *
+   * @param {string} name input name값
+   * @returns {string} input 입력값
+   */
+  const getValue = (name: string) => {
+    if (valuesRef.current[name] !== undefined) return valuesRef.current[name];
 
-    const validation = validations.current[name];
+    throw new Error(`[name: ${name}]가 없습니다.`);
+  };
 
-    if (!validation) return;
+  /**
+   * input 입력값을 변경하는 함수
+   *
+   * @param {string} name input name값
+   * @param {string} value 새롭게 전달된 입력값
+   * @returns {{ [name: string]: string }} 변경된 value
+   */
+  const setValue = (name: string, value: string) => {
+    if (valuesRef.current[name] !== undefined) {
+      valuesRef.current[name] = value;
+      return { [name]: valuesRef.current[name] };
+    }
 
-    const newErrors = Object.keys(validation).filter((type) => {
-      const condition = validation[type];
-      return getOwnErrors(value, type, condition);
-    });
+    throw new Error(`변경할 [name: ${name}]가 없습니다.`);
+  };
 
-    setFields((fields) => ({
-      ...fields,
-      [name]: {
-        value,
-        isDirty: true,
-      },
-    }));
+  /**
+   * 유효성 검사를 실행하는 함수
+   *
+   * @param {string} name input name값
+   * @param {string} value input value값
+   * @param {Validation} validation 유효성 검사 조건
+   */
+  const validate = (name: string, value: string, validation: Validation) => {
+    const newErrors = Object.keys(validation).filter((type) =>
+      getOwnErrors(value, type, validation[type])
+    );
+
     setErrors((errors) => ({
       ...errors,
       [name]: newErrors,
     }));
-  }, []);
-
-  /**
-   * 유효성 검사를 할 입력폼을 등록하는 함수
-   *
-   * @param {string} name 입력폼의 name 값으로 할당될 값
-   * @param {Validation} validation 입력폼의 유효성 검증 조건
-   * @returns
-   */
-  const register = (name: string, validation: Validation) => {
-    if (!formRef.current) return;
-    if (!validations.current) return;
-
-    const ref = useRef<HTMLInputElement>(null);
-
-    validations.current = {
-      ...validations.current,
-      [name]: validation,
-    };
-
-    formRef.current = {
-      ...formRef.current,
-      [name]: ref.current,
-    };
-
-    return validation.required
-      ? {
-          name,
-          ref,
-          required: true,
-        }
-      : { name, ref };
   };
 
   return {
-    fields,
     errors,
+    getValue,
+    setValue,
     validate,
-    register,
   };
 }
 

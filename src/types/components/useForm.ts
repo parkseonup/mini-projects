@@ -8,17 +8,8 @@ interface Validation {
   [index: string]: any;
 }
 
-type ValidationType =
-  | 'required'
-  | 'minLength'
-  | 'maxLength'
-  | 'pattern'
-  | 'custom';
-
-interface UseFormProp {
-  [name: string]: {
-    validation: Validation;
-  };
+interface Validations {
+  [name: string]: Validation;
 }
 
 type Error = (keyof Validation)[];
@@ -27,26 +18,12 @@ interface Errors {
   [name: string]: Error;
 }
 
-interface Field {
-  value: string;
-  isDirty: boolean;
-}
-
-interface Fields {
-  [name: string]: Field;
+interface Values {
+  [name: string]: string;
 }
 
 interface GetOwnErrorsResult {
   [name: string]: any;
 }
 
-export {
-  Validation,
-  ValidationType,
-  UseFormProp,
-  Error,
-  Errors,
-  Field,
-  Fields,
-  GetOwnErrorsResult,
-};
+export { Values, Validation, Validations, Error, Errors, GetOwnErrorsResult };
