@@ -201,7 +201,7 @@ export const getWeeklyDate = (startDate: Date, currentMonth: number) =>
     date.setDate(getDate(startDate) + i);
 
     return {
-      key: `${date}`,
+      key: `daily_${i}_${date}`,
       value: date,
       status: currentMonth === getMonth(date) ? THIS_MONTH : OTHER_MONTH,
     };
@@ -228,9 +228,8 @@ export const getMonthlyDate = (
     newDate.setDate(getDate(monthlyStartDate) + 7 * i);
 
     return {
-      key: getYear(date) * getMonth(date) * weekStart + i,
+      key: `weekly_${i}_${date}`,
       value: getWeeklyDate(newDate, getMonth(date)),
     };
   });
 };
-
