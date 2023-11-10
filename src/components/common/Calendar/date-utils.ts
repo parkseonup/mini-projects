@@ -1,4 +1,4 @@
-import { MonthlyDate } from '../../../types/components/useCalendar';
+import { MonthlyDate } from './useCalendar.type';
 import { MonthSatus } from './date-utils.type';
 
 export const ONE_WEEK = 7;

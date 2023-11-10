@@ -11,7 +11,7 @@ import {
   CalendarData,
   MonthlyDate,
   UseCalendarProps,
-} from '../../../types/components/useCalendar';
+} from './useCalendar.type';
 
 export default function uesCalendar({
   showDate,
